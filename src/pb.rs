@@ -49,6 +49,10 @@ impl ::private::SealedProgressReceiver for ProgressReceiverBox {
     fn finish_with(&mut self, line: &str) {
         self.0.finish_with(line);
     }
+
+    fn log(&mut self, line: &str) {
+        self.0.log(line);
+    }
 }
 
 impl ProgressReceiver for ProgressReceiverBox {

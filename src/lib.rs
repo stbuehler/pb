@@ -181,6 +181,9 @@ mod private {
         // line must not contain any newlines (`\r` or `\n`)
         // empty line doesn't produce a separate line of output
         fn finish_with(&mut self, line: &str);
+        // log before progress
+        // multiple lines supported, newline is always appended
+        fn log(&mut self, line: &str);
     }
 }
 
@@ -208,6 +211,16 @@ impl<T: Write> private::SealedProgressReceiver for T {
             self.write(line.as_bytes()).expect("write() fail");
             self.write(b"\n").expect("write() fail");
         }
+        self.flush().expect("flush() fail");
+    }
+
+    fn log(&mut self, line: &str) {
+        if line.is_empty() { return; }
+        self.write(tty::clear_current_line().as_bytes()).expect("write() fail");
+        //self.write(b"\r\x1b[K").expect("write() fail");
+        //self.write(b"\n\x1b[A\x1b[L").expect("write() fail");
+        self.write(line.as_bytes()).expect("write() fail");
+        self.write(b"\n").expect("write() fail");
         self.flush().expect("flush() fail");
     }
 }

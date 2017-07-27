@@ -316,6 +316,14 @@ impl ::private::SealedProgressReceiver for Pipe {
         })
         .unwrap();
     }
+
+    fn log(&mut self, line: &str) {
+        self.chan.send(WriteMsg::Log{
+            level: self.level,
+            line: line.to_string(),
+        })
+        .unwrap();
+    }
 }
 
 impl ::ProgressReceiver for Pipe {
