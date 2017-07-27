@@ -47,6 +47,10 @@ pub fn move_cursor_up(n: usize) -> String {
     format!("{}", termion::cursor::Up(n as u16))
 }
 
+pub fn clear_after_cursor() -> String {
+    format!("{}", termion::clear::AfterCursor)
+}
+
 #[cfg(not(target_os = "redox"))]
 #[test]
 /// Compare with the output of `stty size`
