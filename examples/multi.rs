@@ -7,7 +7,7 @@ use std::time::Duration;
 use std::io::Write;
 
 fn main() {
-    let mut mb = MultiBar::new();
+    let (mb, mb_listener) = MultiBar::new();
     mb.println("---");
     mb.println("Your Application Header:");
     mb.println("");
@@ -62,7 +62,9 @@ fn main() {
         });
     }
 
-    mb.listen();
+    drop(mb);
+
+    mb_listener.listen();
 
     println!("\nall bars done!\n");
 }

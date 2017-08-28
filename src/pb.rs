@@ -70,8 +70,6 @@ pub struct ProgressBar<T: ProgressReceiver> {
     message: String,
     last_refresh_time: SteadyTime,
     max_refresh_rate: Option<time::Duration>,
-    pub is_finish: bool,
-    pub is_multibar: bool,
     pub show_bar: bool,
     pub show_speed: bool,
     pub show_percent: bool,
@@ -132,8 +130,6 @@ impl<T: ProgressReceiver> ProgressBar<T> {
             current: 0,
             start_time: SteadyTime::now(),
             units: Units::Default,
-            is_finish: false,
-            is_multibar: false,
             show_bar: true,
             show_speed: true,
             show_percent: true,
@@ -169,8 +165,6 @@ impl<T: ProgressReceiver> ProgressBar<T> {
             current: self.current,
             start_time: self.start_time,
             units: self.units,
-            is_finish: self.is_finish,
-            is_multibar: self.is_multibar,
             show_bar: self.show_bar,
             show_speed: self.show_speed,
             show_percent: self.show_percent,
@@ -191,6 +185,10 @@ impl<T: ProgressReceiver> ProgressBar<T> {
             max_refresh_rate: self.max_refresh_rate,
             handle: handle,
         }
+    }
+
+    pub fn is_finished(&self) -> bool {
+        self.handle.is_none()
     }
 
     /// Set units, default is simple numbers
@@ -468,7 +466,6 @@ impl<T: ProgressReceiver> ProgressBar<T> {
         if self.handle.is_some() && redraw {
             self.draw();
         }
-        self.is_finish = true;
     }
 
     /// Calling finish manually will set current to total and draw
@@ -553,7 +550,7 @@ mod test {
         let mut pb = ProgressBar::new(10);
         pb.finish();
         assert!(pb.current == pb.total, "should set current to total");
-        assert!(pb.is_finish, "should set is_finish to true");
+        assert!(pb.is_finished(), "should be finished");
     }
 
     #[test]

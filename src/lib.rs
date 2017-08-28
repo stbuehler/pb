@@ -38,7 +38,7 @@
 //! use std::time::Duration;
 //!
 //! fn main() {
-//!     let mut mb = MultiBar::new();
+//!     let (mb, mb_listener) = MultiBar::new();
 //!     let count = 100;
 //!     mb.println("Application header:");
 //!
@@ -64,10 +64,14 @@
 //!         p2.finish();
 //!     });
 //!
+//!     // all bars are created, not needed anymore. would block `listen`
+//!     // otherwise.
+//!     drop(mb);
+//!
 //!     // start listen to all bars changes.
 //!     // this is a blocking operation, until all bars will finish.
 //!     // to ignore blocking, you can run it in a different thread.
-//!     mb.listen();
+//!     mb_listener.listen();
 //! }
 //! ```
 //!
@@ -116,7 +120,7 @@ mod tty;
 mod pb;
 mod multi;
 pub use pb::{ProgressBar, Units};
-pub use multi::{MultiBar, Pipe, LogTarget};
+pub use multi::{MultiBar, MultiBarListener, MultiBarLine, LogTarget};
 use std::io::{Write, Stdout, stdout};
 
 pub struct PbIter<T, I>

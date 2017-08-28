@@ -37,7 +37,7 @@ use pbr::MultiBar;
 use std::time::Duration;
 
 fn main() {
-    let mut mb = MultiBar::new();
+    let (mb, mb_listener) = MultiBar::new();
     let count = 100;
     mb.println("Application header:");
 
@@ -63,10 +63,14 @@ fn main() {
         p2.finish();
     });
 
+    // all bars are created, not needed anymore. would block `listen`
+    // otherwise.
+    drop(mb);
+
     // start listen to all bars changes.
     // this is a blocking operation, until all bars will finish.
     // to ignore blocking, you can run it in a different thread.
-    mb.listen();
+    mb_listener.listen();
 }
 ```
 
